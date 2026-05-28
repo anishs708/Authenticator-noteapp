@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes Auth Tester</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="auth-panel">
+        <div>
+          <p class="eyebrow">MERN backend tester</p>
+          <h1>Notes Auth Tester</h1>
+        </div>
+
+        <div class="api-row">
+          <label for="apiBase">API base</label>
+          <input id="apiBase" value="http://localhost:5000" />
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Auth mode">
+          <button id="signupTab" class="tab active" type="button">Signup</button>
+          <button id="loginTab" class="tab" type="button">Login</button>
+        </div>
+
+        <form id="authForm" class="form">
+          <div id="signupFields" class="form-grid">
+            <label>
+              Name
+              <input id="name" autocomplete="name" placeholder="Anish" />
+            </label>
+            <label>
+              Age
+              <input id="age" type="number" min="1" placeholder="18" />
+            </label>
+          </div>
+
+          <label>
+            Email
+            <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+          </label>
+
+          <label>
+            Password
+            <input id="password" type="password" autocomplete="current-password" placeholder="Strong password" required />
+          </label>
+
+          <button id="authSubmit" class="primary" type="submit">Create account</button>
+        </form>
+
+        <div id="sessionCard" class="session-card hidden">
+          <div>
+            <span class="label">Signed in as</span>
+            <strong id="sessionEmail"></strong>
+          </div>
+          <button id="logoutBtn" type="button">Logout</button>
+        </div>
+      </section>
+
+      <section class="notes-panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Protected route</p>
+            <h2>Your Notes</h2>
+          </div>
+          <button id="refreshBtn" type="button">Refresh</button>
+        </div>
+
+        <form id="noteForm" class="note-form">
+          <input id="noteId" type="hidden" />
+          <label>
+            Title
+            <input id="title" placeholder="Note title" required />
+          </label>
+          <label>
+            Description
+            <textarea id="description" rows="5" placeholder="Write the note body..." required></textarea>
+          </label>
+          <div class="actions">
+            <button id="saveNoteBtn" class="primary" type="submit">Create note</button>
+            <button id="cancelEditBtn" class="hidden" type="button">Cancel edit</button>
+          </div>
+        </form>
+
+        <div id="message" class="message hidden"></div>
+        <div id="notesList" class="notes-list"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

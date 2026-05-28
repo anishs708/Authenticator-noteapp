@@ -1,16 +1,10 @@
 import express from "express";
+import {signUser,logUser} from "../controllers/users.controllers.js";
 
 const router = express.Router();
 
-router.get('/',(req,res)=>{
+router.post('/signup',signUser)
+router.post('/login',logUser)
 
-})
-router.post('/',(req,res)=>{
 
-})
-router.patch('/',(req,res)=>{
-
-})
-router.delete('/',(req,res)=>{
-
-})
+export default router
