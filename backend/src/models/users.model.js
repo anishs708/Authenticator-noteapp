@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import notes from "./notes.model.js";
 import validator from 'validator'
 import bcrypt from 'bcrypt';
+import AppError from "../utils/AppError.js";
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -27,20 +28,20 @@ const userSchema = new mongoose.Schema({
 });
 userSchema.statics.signUp = async function (email,password, name, age){
     if(!email || !password || !name ||!age){
-        throw Error("You need all the fields");
+        throw new AppError("You need all the fields",400);
     }
     if(age<=0){
-        throw Error("Must have age greater than 0");
+        throw new AppError("Must have age greater than 0",400);
     }
     if(!validator.isEmail(email)){
-        throw Error("You need a correct email");
+        throw new AppError("You need a correct email",400);
     }
     if(!validator.isStrongPassword(password)){
-        throw Error("You need a STRONG password");
+        throw new AppError("You need a STRONG password",400);
     }
     const exists = await this.findOne( { email })
     if(exists){
-        throw Error("The email already exists");
+        throw  new AppError("The email already exists",400);
     }
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password,salt);
@@ -54,12 +55,12 @@ userSchema.statics.logIn = async function (email,password){
     }
     const exists = await this.findOne({email});
     if(!exists){
-        throw Error("The email doesn't exist.");
+        throw new AppError("The email doesn't exist.",400);
     }
     const success = await bcrypt.compare(password, exists.password)
 
     if(!success){
-    throw Error("The password ain't right.");
+    throw new AppError("The password ain't right.",400);
     }
     return exists;
 }

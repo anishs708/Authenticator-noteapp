@@ -5,6 +5,7 @@ import cors from "cors";
 import noteRoutes from "./src/routes/notes.routes.js";
 import userRoutes from "./src/routes/users.routes.js"
 import cookieParser from "cookie-parser";
+import {errorHandler} from "./src/middleware/errorhandler.js"
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(cors({
 }));
 app.use("/api/user",userRoutes);
 app.use("/api/notes",noteRoutes);
+
+app.use(errorHandler);
 
 
 mongoose.connect(process.env.MONGODB_URL)
