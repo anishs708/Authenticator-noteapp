@@ -1,6 +1,6 @@
 const state = {
   mode: "signup",
-  token: localStorage.getItem("token") || "",
+  isLoggedIn: Boolean(localStorage.getItem("email")),
   email: localStorage.getItem("email") || "",
   notes: []
 };
@@ -57,14 +57,12 @@ async function request(path, options = {}) {
     ...(options.headers || {})
   };
 
-  if (state.token) {
-    headers.Authorization = `Bearer ${state.token}`;
-  }
-
   const response = await fetch(`${apiBase()}${path}`, {
     ...options,
-    headers
+    headers,
+    credentials: "include"
   });
+
 
   const data = await response.json().catch(() => ({}));
 
@@ -87,26 +85,24 @@ function setMode(mode) {
   clearMessage();
 }
 
-function saveSession({ email, token }) {
+function saveSession({ email }) {
   state.email = email;
-  state.token = token;
+  state.isLoggedIn = true;
   localStorage.setItem("email", email);
-  localStorage.setItem("token", token);
   renderSession();
 }
 
 function clearSession() {
   state.email = "";
-  state.token = "";
+  state.isLoggedIn = false;
   state.notes = [];
   localStorage.removeItem("email");
-  localStorage.removeItem("token");
   renderSession();
   renderNotes();
 }
 
 function renderSession() {
-  const signedIn = Boolean(state.token);
+  const signedIn = state.isLoggedIn;
   els.sessionCard.classList.toggle("hidden", !signedIn);
   els.sessionEmail.textContent = state.email;
 }
@@ -120,7 +116,7 @@ function resetNoteForm() {
 }
 
 function renderNotes() {
-  if (!state.token) {
+  if (!state.isLoggedIn) {
     els.notesList.innerHTML = '<div class="empty-state">Login or signup first, then your notes will show here.</div>';
     return;
   }
@@ -161,7 +157,7 @@ function escapeHtml(value = "") {
 }
 
 async function loadNotes() {
-  if (!state.token) {
+  if (!state.isLoggedIn) {
     renderNotes();
     return;
   }
@@ -202,7 +198,13 @@ els.authForm.addEventListener("submit", async (event) => {
   }
 });
 
-els.logoutBtn.addEventListener("click", () => {
+els.logoutBtn.addEventListener("click", async () => {
+  try {
+    await request("/api/user/logout", { method: "POST" });
+  } catch (error) {
+    console.log(error);
+  }
+
   clearSession();
   resetNoteForm();
   setMessage("Logged out.");

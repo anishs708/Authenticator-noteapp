@@ -11,7 +11,7 @@ export const getANote = async(req,res)=>{
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(401).json({error: "The id don't exist"});
     }
-    const note = await Notes.findById(id);
+    const note = await Notes.findOne({_id: id, user_id: req.user._id});
     if(!note){
         return res.status(401).json({error: "The note doesn't exist"})
     }
@@ -22,7 +22,7 @@ export const updateANote = async (req,res)=>{
     if(!mongoose.Types.ObjectId.isValid(id)){
     return res.status(401).json({error:"it ain't there"})
     }
-    const note = await Notes.findOneAndUpdate({_id: id},{...req.body});
+    const note = await Notes.findOneAndUpdate({_id: id,user_id: req.user._id},{...req.body},{ new: true });
     if(!note) {
         return res.status(400).json({error: 'No such note'})
       }
@@ -34,7 +34,10 @@ export const deleteANote = async (req,res)=>{
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(401).json({error:"it ain't there"})
         }
-        const note = await Notes.findByIdAndDelete(id);
+        const note = await Notes.findOneAndDelete({
+        _id: id,
+        user_id: req.user._id
+        });
         if(!note) {
             return res.status(400).json({error: 'No such note'})
           }
