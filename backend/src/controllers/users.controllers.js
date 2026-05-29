@@ -29,6 +29,7 @@ export const logUser = asyncHandler(async (req,res)=>{
         res.cookie("token",token,{
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
             maxAge: 3*24*7*30*365
         })
         res.status(200).json({email});

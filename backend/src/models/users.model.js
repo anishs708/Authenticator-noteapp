@@ -51,7 +51,7 @@ userSchema.statics.signUp = async function (email,password, name, age){
 }
 userSchema.statics.logIn = async function (email,password){
     if(!email || !password){
-    throw Error("Can't leave the fields empty.")
+    throw new AppError("Can't leave the fields empty.",400)
     }
     const exists = await this.findOne({email});
     if(!exists){
